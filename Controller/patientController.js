@@ -83,17 +83,17 @@ exports.addPatient = async (request, response, next) => {
     response
       .status(201)
       .json({ message: "Patient created successfully.", savedPatient });
-  } catch (error) {next(error);}
+  } catch (error) { next(error); }
 };
 
 // Put a patient
 exports.putPatientById = async (request, response, next) => {
   try {
-    let patientExists = await patientSchema.find({ _id: request.body.clinic });
+    let patientExists = await patientSchema.find({ _id: request.params.id });
     if (!patientExists)
       return response
         .status(400)
-        .json({ message: `Patient ${request.body.id} not found` });
+        .json({ message: `Patient ${request.params.id} not found` });
     let testEmailandPhone = await users.findOne({
       $or: [
         { _email: request.body.email },
@@ -212,33 +212,6 @@ exports.patchPatientById = async (request, response, next) => {
     }
     if (request.body.email) {
       tempPatient._email = request.body.email;
-    }
-    //check firstname / lastname
-    if (request.body.firstname && request.body.lastname) {
-      let tryFirstandLastName = await patientSchema.findOne({
-        _fname: request.body.firstname,
-        _lname: request.body.lastname,
-      });
-      if (tryFirstandLastName)
-        return response.status(400).json({
-          message: `There already a doctor with such name`,
-        });
-    } else if (request.body.firstname) {
-      let tryFirstName = await patientSchema.find({
-        _fname: request.body.firstname,
-      });
-      if (tryFirstName.length > 0)
-        return response.status(400).json({
-          message: `There already a doctor with such name`,
-        });
-    } else if (request.body.lastname) {
-      let tryLastName = await patientSchema.find({
-        _lname: request.body.lastname,
-      });
-      if (tryLastName.length > 0)
-        return response.status(400).json({
-          message: `There already a doctor with such name`,
-        });
     }
     //_____UPDATES_____//
     //check duplicate email/phone & update usermodel => last

@@ -53,3 +53,47 @@ module.exports.accessClinicResources = (...roles) => {
     }
   };
 };
+
+
+module.exports.accessPay = (...roles) => {
+  return (request, response, next) => {
+    if (
+      request.userData.role !== "admin" &&
+      !roles.includes(request.userData.role)
+    ) {
+      const error = new Error("You are not authorized to access this resource");
+      error.status = 403;
+      next(error);
+    } else if (
+      request.userData.id != request.body.id &&
+      request.userData.role !== "admin"
+    ) {
+      const error = new Error("You have no access to this resource");
+      error.status = 403;
+      next(error);
+    } else {
+      next();
+    }
+  };
+};
+module.exports.accessAppointment = (...roles) => {
+  return (request, response, next) => {
+    if (
+      request.userData.role !== "admin" &&
+      !roles.includes(request.userData.role)
+    ) {
+      const error = new Error("You are not authorized to access this resource");
+      error.status = 403;
+      next(error);
+    } else if (
+      request.userData.id != request.body.patientId &&
+      request.userData.role !== "admin"
+    ) {
+      const error = new Error("You have no access to this resource");
+      error.status = 403;
+      next(error);
+    } else {
+      next();
+    }
+  };
+};

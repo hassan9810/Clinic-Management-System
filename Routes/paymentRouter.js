@@ -9,6 +9,6 @@ const authorizationMW = require("../Middlewares/authorizationMW");
 
 const router = express.Router();
 
-router.route("/pay/:id").post(authorizationMW.access("patient"),validatePayment, errorValidation, controller.addPayment);
+router.route("/pay/:id").post(authorizationMW.accessPay("patient"),validatePayment, errorValidation, controller.addPayment);
 
 module.exports = router;

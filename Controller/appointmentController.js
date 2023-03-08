@@ -61,7 +61,7 @@ exports.addAppointment = async (request, response, next) => {
 
     let flagForSchedule = false;
     let dayInWeek = mapDateToDay(date);
-    for (var i = 0; i < clinic._weeklySchedule.length; i++) {
+    for (let i = 0; i < clinic._weeklySchedule.length; i++) {
       if (
         doctor._id == clinic._weeklySchedule[i].doctorId &&
         dateBetween(
@@ -70,9 +70,10 @@ exports.addAppointment = async (request, response, next) => {
           clinic._weeklySchedule[i].end
         ) &&
         dayInWeek == clinic._weeklySchedule[i].day
-      )
+      ){
         flagForSchedule = true;
       break;
+    }
     }
     if (!flagForSchedule)
       return response
@@ -281,7 +282,7 @@ exports.dailyAppointmentsReports = (request, response, next) => {
   let nextDay = new Date(date.getTime() + day);
   appointmentSchema
     .find({ date: { $gt: date, $lt: nextDay } })
-    .populate({ path: "_patientId", select: { _id: 0, _fname: 1, _lname: 1 } })
+    // .populate({ path: "_patientId", select: { _id: 0, _fname: 1, _lname: 1 } })
     .populate({ path: "_doctorId", select: { _id: 0, _fname: 1, _lname: 1 } })
     .populate({ path: "_clinicId", select: { _id: 0, _specilization: 1 } })
     .then((data) => {

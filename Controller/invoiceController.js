@@ -22,8 +22,8 @@ exports.getInvoices = async (request, response, next) => {
   try {
     let query = reqNamesToSchemaNames(request.query);
     let invoice = await filterData(invoiceSchema, query, [
-      { path: "patient_Id", options: { strictPopulate: false }, select:{_email:1, _fname:1, _lname:1} },
-      { path: "clinic_Id", options: { strictPopulate: false } ,select: {  _specilization:1 } },
+      { path: "patient_Id", options: { strictPopulate: false }, select: { _email: 1, _fname: 1, _lname: 1 } },
+      { path: "clinic_Id", options: { strictPopulate: false }, select: { _specilization: 1 } },
     ]);
     invoice = sortData(invoice, query);
     invoice = paginateData(invoice, request.query);
@@ -44,7 +44,7 @@ const generateInvoiceId = () => {
   const random = Math.floor(Math.random() * 10000).toString().padStart(4, "0");
   const invoiceId = `${year}-${day}${month}-${random}`;
   return invoiceId;
-  };
+};
 
 // Add a new invoice
 exports.addInvoice = async (request, response, next) => {
@@ -67,32 +67,32 @@ exports.addInvoice = async (request, response, next) => {
       if (!clinicService) return response.status(400).json({ error: `Service ${services[i].name} not found in clinic ${request.body.clinicId}` });
 
       totalCost += clinicService.cost + services[i].additionalCosts;
-      let invoiceServicesobject = {"name": clinicService.name, "cost": clinicService.cost+services[i].additionalCosts};
+      let invoiceServicesobject = { "name": clinicService.name, "cost": clinicService.cost + services[i].additionalCosts };
       invoiceServices.push(invoiceServicesobject);
     }
     let paymentMethod = "cash";
-    if(request.body.paymentMethod){
-    paymentMethod = request.body.paymentMethod;
-    if (paymentMethod!== "cash" && paymentMethod!== "credit card" && paymentMethod!== "insurance") {
-      return response.status(400).json({ error: "Payment method not accepted" });
+    if (request.body.paymentMethod) {
+      paymentMethod = request.body.paymentMethod;
+      if (paymentMethod !== "cash" && paymentMethod !== "credit card" && paymentMethod !== "insurance") {
+        return response.status(400).json({ error: "Payment method not accepted" });
+      }
     }
-  }
-  let paid =0;
-  let totalDue = totalCost;
-  let invoiceStatus = "unpaid";
-  if (request.body.paid){
-    paid = request.body.paid;
-    if (paid > totalCost) {
-      return response.status(400).json({ error: "Paid amount is greater than total cost" });
+    let paid = 0;
+    let totalDue = totalCost;
+    let invoiceStatus = "unpaid";
+    if (request.body.paid) {
+      paid = request.body.paid;
+      if (paid > totalCost) {
+        return response.status(400).json({ error: "Paid amount is greater than total cost" });
+      }
+      else if (paid === totalCost) {
+        invoiceStatus = "paid";
+        totalDue = 0;
+      } else {
+        invoiceStatus = "partial";
+        totalDue = totalCost - paid;
+      }
     }
-    else if (paid === totalCost) {
-      invoiceStatus = "paid";
-      totalDue = 0;
-    }else{
-    invoiceStatus = "partial";
-    totalDue = totalCost - paid;
-    }
-  }
 
     let addedInvoice = invoiceSchema({
       _id: generateInvoiceId(),
@@ -105,7 +105,6 @@ exports.addInvoice = async (request, response, next) => {
       totalDue: totalDue,
       status: invoiceStatus,
     });
-    console.log(addedInvoice);
     await addedInvoice.save();
 
     patient.invoices.push({
@@ -122,7 +121,7 @@ exports.addInvoice = async (request, response, next) => {
 
     let data = {
       currency: "USD",
-      taxNotation: "vat", 
+      taxNotation: "vat",
       marginTop: 25,
       marginRight: 25,
       marginLeft: 25,
@@ -149,9 +148,8 @@ exports.addInvoice = async (request, response, next) => {
       information: {
         number: addedInvoice._id,
         date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
-        "due-date": `${dueDate.getDate()}/${
-          dueDate.getMonth() + 1
-        }/${dueDate.getFullYear()}`,
+        "due-date": `${dueDate.getDate()}/${dueDate.getMonth() + 1
+          }/${dueDate.getFullYear()}`,
       },
       products: invoiceServices.map((service) => ({
         quantity: "1",
@@ -195,12 +193,12 @@ exports.editInvoice = async (request, response, next) => {
     }
 
     let paymentMethod = existingInvoice.paymentMethod;
-    if(request.body.paymentMethod){
-    paymentMethod = request.body.paymentMethod;
-    if (paymentMethod!== "cash" && paymentMethod!== "credit card" && paymentMethod!== "insurance") {
-      return response.status(400).json({ error: "Payment method not accepted" });
+    if (request.body.paymentMethod) {
+      paymentMethod = request.body.paymentMethod;
+      if (paymentMethod !== "cash" && paymentMethod !== "credit card" && paymentMethod !== "insurance") {
+        return response.status(400).json({ error: "Payment method not accepted" });
+      }
     }
-  }
     let { clinicId, patientId, services } = request.body;
     let total = existingInvoice.total;
     let paid = existingInvoice.paid;
@@ -228,14 +226,14 @@ exports.editInvoice = async (request, response, next) => {
     let invoiceServices = [];
     if (!services) {
       services = existingInvoice.services;
-    } 
+    }
     for (let i = 0; i < services.length; i++) {
       let clinicService = clinic._services.find((service) => service.name === services[i].name);
       if (!clinicService) return response.status(400).json({ error: `Service ${services[i].name} not found in clinic ${request.body.clinicId}` });
-      let invoiceServicesobject = {"name": clinicService.name, "cost": clinicService.cost+services[i].additionalCosts};
+      let invoiceServicesobject = { "name": clinicService.name, "cost": clinicService.cost + services[i].additionalCosts };
       invoiceServices.push(invoiceServicesobject);
-    } 
-    
+    }
+
     if (request.body.paid) {
       paid = request.body.paid;
       if (paid > total) {
@@ -244,12 +242,12 @@ exports.editInvoice = async (request, response, next) => {
       else if (paid === total) {
         invoiceStatus = "paid";
         totalDue = 0;
-      }else{
-      invoiceStatus = "partial";
-      totalDue = total - paid;
+      } else {
+        invoiceStatus = "partial";
+        totalDue = total - paid;
       }
     }
-    
+
 
     let tempInvoice = {
       clinic_Id: clinicId,
@@ -267,7 +265,7 @@ exports.editInvoice = async (request, response, next) => {
       { $set: tempInvoice }
     );
 
-    if(!patient){
+    if (!patient) {
       patient = await patientSchema.findOne({ _id: patientId });
     }
     const updatedInvoiceIndex = patient.invoices.findIndex((invoice) => invoice.invoice_id === existingInvoice._id);
@@ -286,7 +284,7 @@ exports.editInvoice = async (request, response, next) => {
 
     let data = {
       currency: "USD",
-      taxNotation: "vat", 
+      taxNotation: "vat",
       marginTop: 25,
       marginRight: 25,
       marginLeft: 25,
@@ -314,9 +312,8 @@ exports.editInvoice = async (request, response, next) => {
       information: {
         number: existingInvoice._id,
         date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
-        "due-date": `${dueDate.getDate()}/${
-          dueDate.getMonth() + 1
-        }/${dueDate.getFullYear()}`,
+        "due-date": `${dueDate.getDate()}/${dueDate.getMonth() + 1
+          }/${dueDate.getFullYear()}`,
       },
       products: invoiceServices.map((service) => ({
         quantity: "1",
@@ -390,10 +387,8 @@ exports.getInvoiceById = async (request, response, next) => {
 exports.allInvoicesReports = (request, response, next) => {
   invoiceSchema
     .find()
-    .populate({ path: "_appointmentId", select: { _id: 0 } })
-    .populate({ path: "_doctorId", select: { _id: 0 } })
-    .populate({ path: "_clinicId", select: { _id: 0 } })
-    .populate({ path: "_patientId", select: { _id: 0 } })
+    .populate({ path: "clinic_Id", select: { _id: 0 } })
+    .populate({ path: "patient_Id", select: { _id: 0 } })
     .then((data) => {
       response.status(200).json(data);
     })
@@ -408,10 +403,8 @@ exports.dailyInvoicesReports = (request, response, next) => {
   let nextDay = new Date(date.getTime() + day);
   invoiceSchema
     .find({ date: { $gt: date, $lt: nextDay } })
-    .populate({ path: "_appointmentId", select: { _id: 0 } })
-    .populate({ path: "_doctorId", select: { _id: 0 } })
-    .populate({ path: "_clinicId", select: { _id: 0 } })
-    .populate({ path: "_patientId", select: { _id: 0 } })
+    .populate({ path: "clinic_Id", select: { _id: 0 } })
+    .populate({ path: "patient_Id", select: { _id: 0 } })
     .then((data) => {
       response.status(200).json(data);
     })
@@ -421,11 +414,9 @@ exports.dailyInvoicesReports = (request, response, next) => {
 // Patient Invoice Reports
 exports.patientInvoicesReports = (request, response, next) => {
   invoiceSchema
-    .find({ _patientId: request.params.id })
-    .populate({ path: "_appointmentId", select: { _id: 0 } })
-    .populate({ path: "_doctorId", select: { _id: 0 } })
-    .populate({ path: "_clinicId", select: { _id: 0 } })
-    .populate({ path: "_patientId", select: { _id: 0 } })
+    .find({ patient_Id: request.params.id })
+    .populate({ path: "clinic_Id", select: { _id: 0 } })
+    .populate({ path: "patient_Id", select: { _id: 0 } })
     .then((data) => {
       response.status(200).json(data);
     })
@@ -450,7 +441,7 @@ const reqNamesToSchemaNames = (query) => {
         break;
       }
     }
-    replacedQuery[newKey] = query[key];
+    replacedQuery[newKey] = query[key]; 
   }
   return replacedQuery;
 };

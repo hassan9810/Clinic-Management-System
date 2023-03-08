@@ -502,7 +502,7 @@ const dateBetween = (date1, date2, date3) => {
   return (
     new Date(`${new Date().toLocaleDateString()} ${date1}`) >=
       new Date(`${new Date().toLocaleDateString()} ${date2}`) &&
-    new Date(`${new Date().toLocaleDateString()} ${date1}`) <
+    new Date(`${new Date().toLocaleDateString()} ${date1}`) <=
       new Date(`${new Date().toLocaleDateString()} ${date3}`)
   );
 };

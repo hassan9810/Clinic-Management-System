@@ -1,4 +1,4 @@
-const stripe = require("stripe")(process.env.SECRET_KEY_STRIPE);
+const stripe = require("stripe")("sk_test_51MYGCZC1E4uAr6SEQB22W2K5oa9XK5PRcjylCvcPIhVwcQaGEwqefT7QfjBGvEy8XBMAiNoFS8F1xQaKwhz3VLEc00DAJkUp0n");
 const invoiceSchema = require("./../Models/invoiceModel");
 const patientSchema = require("./../Models/patientModel");
 const paymentSchema = require("./../Models/paymentModel");
