@@ -58,7 +58,7 @@ The API uses the following environment variables:
 ## Installation
 To install the platform and its dependencies, follow these steps:
 1. Clone the repository.
-$ git clone https://github.com/MoIbrahim10/Clinic-Management-System.git
+$ git clone https://github.com/hassan9810/Clinic-Management-System
 
 2. Install the dependencies.
 ```bash
