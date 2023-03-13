@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 const personSchema = require("./personModel");
+// const invoicesSchema = require("./invoiceModel");
 
 const invoicesSchema = new mongoose.Schema({
     invoice_id: { type: String },

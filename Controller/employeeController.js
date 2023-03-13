@@ -74,6 +74,7 @@ exports.addEmployee = async (request, response, next) => {
       _clinic: request.body.clinic,
       _monthlyRate: request.body.salary,
       _workingHours: request.body.workingHours,
+      _medicalHistory: request.body.medicalHistory,
     };
     if (request.file) {
       sentObject._image = request.file.path;
@@ -140,6 +141,7 @@ exports.putEmployee = async (request, response, next) => {
       _clinic: request.body.clinic,
       _monthlyRate: request.body.salary,
       _workingHours: request.body.workingHours,
+      _medicalHistory: request.body.medicalHistory,
     };
     if (request.file) {
       sentObject._image = request.file.path;
@@ -179,6 +181,9 @@ exports.patchEmployee = async (request, response, next) => {
     }
     if (request.body.phone) {
       tempEmployee._contactNumber = request.body.phone;
+    }
+    if (request.body.medicalHistory) {
+      tempEmployee._medicalHistory = request.body.medicalHistory;
     }
     if (request.body.clinic) {
       let employeeExists = await clinicSchema.find({
@@ -329,6 +334,7 @@ const reqNamesToSchemaNames = (query) => {
     clinic: "_clinic",
     salary: "_monthlyRate",
     workingHours: "_workingHours",
+    medicalHistory: "_medicalHistory",
   };
 
   const replacedQuery = {};

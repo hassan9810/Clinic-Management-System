@@ -13,7 +13,7 @@ const router = express.Router();
 
 router
   .route("/patient")
-  .all(authorizationMW.access())
+  .all(authorizationMW.accessPatient("receptionist"))
   .get(controller.getAllPatients)
   .post(
     upload.single("photo"),
@@ -30,7 +30,7 @@ router
     authorizationMW.access("patient")
   )
   .get(controller.getPatientById)
-  .put(upload.single("photo"),validatePatient, validatorMiddleware, controller.putPatientById)
+  .put(upload.single("photo"), validatePatient, validatorMiddleware, controller.putPatientById)
   .patch(
     upload.single("photo"),
     validatePatchPatient,

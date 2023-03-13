@@ -43,6 +43,13 @@ const scheduleSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const invoicesSchema = new mongoose.Schema({
+  invoice_id: { type: String },
+  total: { type: Number },
+  totalDue: { type: Number },
+  status: { type: String },
+},  { _id: false });
+
 const doctorSchema = new mongoose.Schema(
   Object.assign({}, personSchema.obj, {
     _id: { type: Number },
@@ -74,6 +81,8 @@ const doctorSchema = new mongoose.Schema(
         ref: "appointment",
       },
     ],
+    _medicalHistory: { type: String },
+    invoices: [invoicesSchema],
   })
 );
 /*** auto increment for _id field ***/

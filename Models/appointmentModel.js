@@ -10,10 +10,15 @@ const appointmentSchema = new mongoose.Schema({
     ref: "clinic",
     required: true,
   },
-  _patientId: {
+  userId: {
     type: Number,
-    ref: "patient",
     required: true,
+    ref: "user"
+  },
+  userType: {
+    type: String,
+    required: true,
+    enum: ["patient", "doctor", "employee"],
   },
   _doctorId: {
     type: Number,
@@ -47,7 +52,7 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
     default: "Pending",
     enum: ["Pending", "Accepted", "Declined", "Completed"],
-  }
+  },
 });
 
 module.exports = mongoose.model("appointment", appointmentSchema);

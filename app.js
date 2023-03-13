@@ -16,6 +16,7 @@ const appointmentRouter = require("./Routes/appointmentRouter");
 const prescriptionRouter = require("./Routes/prescriptionRouter");
 const invoiceRouter = require("./Routes/invoiceRouter");
 const paymentRouter = require("./Routes/paymentRouter");
+const showAppointmentRouter = require("./Routes/showAppointmentRouter");
 const {
   checkAppointmentsDaily,
 } = require("./Middlewares/dailyAppointmentCheck");
@@ -74,6 +75,8 @@ app.use(express.json());
 
 // c- Routes (End points)  middleware
 checkAppointmentsDaily();
+/* Show Available Schedule */
+app.use(showAppointmentRouter);
 /* Register patient */
 app.use(registerRouter);
 /* Authenticate user */
