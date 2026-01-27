@@ -17,7 +17,6 @@ The following technologies were used to develop the platform:
 - bcrypt
 - easyinvoice
 - express-validator
-- fs
 - jsonwebtoken
 - mongoose-sequence
 - mongoose-validator
