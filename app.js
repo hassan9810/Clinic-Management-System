@@ -34,19 +34,13 @@ mongoose.set("strictQuery", true);
 async function connectToServer() {
   let connected;
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGODB_URI);
     connected = true;
   } catch (error) {
     console.log(`Error connecting to cloud database , ${error.message}`);
     console.log("Trying to connect to local database...");
     try {
-      await mongoose.connect(process.env.MONGODB_LOCAL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      await mongoose.connect(process.env.MONGODB_LOCAL);
       connected = true;
     } catch (error2) {
       console.log(
